@@ -3,7 +3,6 @@
 #include "systick.h"
 
 
-
 /**************************************************************************//**
  * @brief Konverterer nummer til string 
  * Konverterer et nummer mellom 0 og 99 til string
@@ -61,7 +60,7 @@ volatile uint8_t FLAGS = 0;
 ///The current state will contain the current state which corresponds to its function in the function pointer array
 state_t _current_state = SET_SEC;
 ///Holds the amount of time until the alarm is triggered.
-struct timestamp _timestamp = {0,0,0};
+static timestamp_t _timestamp = {0, 0, 0};
 
 ///Defines an array of functionpointers that will be used as different states.
 state_t (*state_function_array[NUM_STATES])(void) = {
@@ -87,7 +86,7 @@ int main(void) {
         _current_state = state_function();
         state_function = state_function_array[_current_state];
         time_to_string(time_string, _timestamp.hour, _timestamp.min, _timestamp.sec);
-        lcd_write(time_string)
+        lcd_write(time_string);
     }
     
     return 0;
@@ -153,7 +152,7 @@ state_t set_hour_func(void) {
     }
     if (FLAGS & TRANSITION) {
         FLAGS &= ~TRANSITION;
-        start_systick();
+        enable_systick();
         return COUNT;
     }
     return SET_HOUR;
@@ -165,7 +164,7 @@ state_t count_func(void) {
         reduce_timestamp(&_timestamp);
         return COUNT;
     }
-    if (zero_time(_timestamp)) {
+    if (zero_time(&_timestamp)) {
         disable_systick();
         return ALARM;
     }
@@ -175,14 +174,18 @@ state_t count_func(void) {
 state_t alarm_func(void) {
     port_pin_t pin = {GPIO_PORT_B, LED_PIN};
     toggle_led(pin);
+    if (FLAGS & TRANSITION) {
+        GPIO_CLR_REG(GPIO_PORT_B) |= (1 << LED_PIN);        
+        return SET_SEC;
+    }
     return ALARM;
 }
 
 void toggle_led(port_pin_t led_pin) {
-    GPIO_TOGGLE_REG(led_pin.port) |= (1 << pin.pin);
+    GPIO_TOGGLE_REG(led_pin.port) |= (1 << led_pin.pin);
 }
 
-void reduce_timestamp(struct timestamp &ts) {
+void reduce_timestamp(timestamp_t* ts) {
     if (ts->sec) {
         ts->sec--;
     }
@@ -201,7 +204,7 @@ void reduce_timestamp(struct timestamp &ts) {
     }
 }
 
-int zero_time(struct timestamp &ts) {
+int zero_time(timestamp_t* ts) {
     if (!(ts->hour) && !(ts->min) && !(ts->sec)) {
         return 1;
     }

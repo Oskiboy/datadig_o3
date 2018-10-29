@@ -24,11 +24,11 @@ typedef enum State {
     NUM_STATES
 } state_t;
 
-struct timestamp {
-    uint32_t sec,
-    uint32_t min,
-    uint32_t hour
-};
+typedef struct {
+    uint32_t sec;
+    uint32_t min;
+    uint32_t hour;
+} timestamp_t;
 
 // Prototyper for bibliotekfunksjoner
 void init(void);
@@ -43,9 +43,9 @@ state_t set_min_func(void);
 state_t set_hour_func(void);
 state_t count_func(void);
 state_t alarm_func(void);
-void reduce_timestamp(struct timestamp &ts);
-int zero_time(struct timestamp &ts)
-void init_systic(void);
+void reduce_timestamp(timestamp_t* ts);
+int zero_time(timestamp_t* ts);
+void init_systick(void);
 void enable_systick(void);
 void toggle_led(port_pin_t led_pin);
 

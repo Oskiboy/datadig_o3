@@ -35,6 +35,7 @@ typedef struct{
 //GPIO port definitions
 #define PORT_BASE(port_num) 		(GPIO_BASE+(port_num)*sizeof(word))
 #define GPIO_TOGGLE_REG(port_num) 	(*((volatile unsigned int*)(PORT_BASE(port_num)+GPIO_PORT_DOUTTGL)))
+#define GPIO_CLR_REG(port_num)		(*((volatile unsigned int*)(PORT_BASE(port_num)+GPIO_PORT_DOUTCLR)))
 #define GPIO_CTRL_REG(port_num) 	(*((volatile unsigned int*)(PORT_BASE(port_num)+GPIO_PORT_CTRL)))
 #define GPIO_DIN_REG(port_num)		(*((volatile unsigned int*)(PORT_BASE(port_num)+GPIO_PORT_DIN)))
 #endif
