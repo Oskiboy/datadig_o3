@@ -1,20 +1,14 @@
-/* En rask måte å unngå header recursion på er å sjekke om verdi, f.eks. 'O3_H',
-   er definert. Hvis ikke, definer 'O3_H' og deretter innholdet av headeren 
-   (merk endif på bunnen). Nå kan headeren inkluderes så mange ganger vi vil 
-   uten at det blir noen problemer. */
 #ifndef O3_H
 #define O3_H
 
-// Type-definisjoner fra std-bibliotekene
 #include <stdint.h>
 #include <stdbool.h>
 #include "gpio.h"
 
-// Type-aliaser
 typedef uint32_t word;
 typedef uint8_t  byte;
 
-///Defines all the mcus states
+///Defines all the MCUs states
 typedef enum State {
     SET_SEC,
     SET_MIN,
@@ -30,14 +24,14 @@ typedef struct {
     uint32_t hour;
 } timestamp_t;
 
-// Prototyper for bibliotekfunksjoner
+// Prototypes for library functions
 void init(void);
 void lcd_write(char* string);
 void int_to_string(char *timestamp, unsigned int offset, int i);
 void time_to_string(char *timestamp, int h, int m, int s);
 
-// Prototyper
-// legg prototyper for dine funksjoner her
+//My prototypes
+void set_up_gpio(void);
 state_t set_sec_func(void);
 state_t set_min_func(void);
 state_t set_hour_func(void);
@@ -47,7 +41,7 @@ void reduce_timestamp(timestamp_t* ts);
 int zero_time(timestamp_t* ts);
 void init_systick(void);
 void enable_systick(void);
+void disable_systick(void);
 void toggle_led(port_pin_t led_pin);
-
 
 #endif

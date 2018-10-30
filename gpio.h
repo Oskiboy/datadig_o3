@@ -1,30 +1,59 @@
 #ifndef GPIO_H
 #define GPIO_H
 #include "o3.h"
-// Pin-datatype
+
 typedef struct{
 	unsigned int   port;
 	unsigned int   pin;
 } port_pin_t;
 
+
 // GPIO pin modes
 #define GPIO_MODE_INPUT  0b0001
 #define GPIO_MODE_OUTPUT 0b0100
 
-// GPIO-adresse
-#define GPIO_BASE 0x40006000
+// GPIO address
+#define GPIO_BASE 			0x40006000
 
-#define GPIO_PORT_CTRL       0     // Port Control Register
-#define GPIO_PORT_MODEL      4     // Port Pin Mode Low Register
-#define GPIO_PORT_MODEH      8     // Port Pin Mode High Register
-#define GPIO_PORT_DOUT       12    // Port Data Out Register
-#define GPIO_PORT_DOUTSET    16    // Port Data Out Set Register
-#define GPIO_PORT_DOUTCLR    20    // Port Data Out Clear Register
-#define GPIO_PORT_DOUTTGL    24    // Port Data Out Toggle Register
-#define GPIO_PORT_DIN      	 28    // Port Data In Register
-#define GPIO_PORT_PINLOCKN   32    // Port Unlocked Pins Register_
+// GPIO instanziation
+#define GPIO_PORT(_name)	volatile gpio_t *_name = (gpio_t*)GPIO_BASE;
 
-// GPIO port-nummere
+//Struct for holding port specific registers.
+struct gpio_port_t {
+	uint32_t	CTRL;
+	uint32_t	MODEL;
+	uint32_t	MODEH;
+	uint32_t	DOUT;
+	uint32_t	DOUTSET;
+	uint32_t	DOUTCLR;
+	uint32_t	DOUTTGL;
+	uint32_t	DIN;
+	uint32_t	PINLOCKN;
+};
+
+//The entire gpio register set.
+typedef struct {
+	struct gpio_port_t 	ports[6];
+	uint32_t	not_used[10];
+	uint32_t 	EXTIPSELL;
+	uint32_t 	EXTIPSELH;
+	uint32_t 	EXTIRISE;
+	uint32_t 	EXTIFALL;
+	uint32_t 	IEN;
+	uint32_t 	IF;
+	uint32_t 	IFS;
+	uint32_t 	IFC;
+	uint32_t 	ROUTE;
+	uint32_t 	INSENSE;
+	uint32_t 	LOCK;
+	uint32_t 	CTRL;
+	uint32_t 	CMD;
+	uint32_t 	EM4WUEN;
+	uint32_t 	EM4WUPOL;
+	uint32_t 	EM4WUCAUSE;
+} gpio_t;
+
+// GPIO port numbers
 #define GPIO_PORT_A 0
 #define GPIO_PORT_B 1
 #define GPIO_PORT_C 2
@@ -32,10 +61,4 @@ typedef struct{
 #define GPIO_PORT_E 4
 #define GPIO_PORT_F 5
 
-//GPIO port definitions
-#define PORT_BASE(port_num) 		(GPIO_BASE+(port_num)*sizeof(word))
-#define GPIO_TOGGLE_REG(port_num) 	(*((volatile unsigned int*)(PORT_BASE(port_num)+GPIO_PORT_DOUTTGL)))
-#define GPIO_CLR_REG(port_num)		(*((volatile unsigned int*)(PORT_BASE(port_num)+GPIO_PORT_DOUTCLR)))
-#define GPIO_CTRL_REG(port_num) 	(*((volatile unsigned int*)(PORT_BASE(port_num)+GPIO_PORT_CTRL)))
-#define GPIO_DIN_REG(port_num)		(*((volatile unsigned int*)(PORT_BASE(port_num)+GPIO_PORT_DIN)))
 #endif
