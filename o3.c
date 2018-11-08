@@ -260,7 +260,7 @@ void set_up_gpio(void) {
     //Interrupts happen on falling edges
     gpio_m->EXTIFALL |= 	(1 << PB0_PIN) | (1 << PB1_PIN);
     //Clear the interrupt flag register
-    gpio_m->IFC |= (1 << PB0_PIN) | (1 << PB1_PIN);
+    gpio_m->IFC |=          (1 << PB0_PIN) | (1 << PB1_PIN);
     //Enable interrupts
     gpio_m->IEN |= 			(1 << PB0_PIN) | (1 << PB1_PIN);
 
