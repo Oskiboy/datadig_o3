@@ -39,7 +39,7 @@ DUMP       := arm-none-eabi-objdump
 
 # Detect operating system
 ifeq ($(SHELLNAMES),)           # Linux
-  EACOM = /opt/SimplicityStudio_v3/bgtool/commander/commander
+  EACOM = /opt/SimplicityCommander/commander/commander
 else
   EACOM = C:\SiliconLabs\SimplicityStudio\v3\bgtool\commander\commander.exe
   ifneq ($(COMSPEC),)           # mingw/msys/cygwin platform running on Windows
